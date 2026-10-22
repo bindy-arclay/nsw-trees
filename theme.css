@@ -1,0 +1,48 @@
+/* The app's whole look lives here: change these values to restyle it. */
+:root {
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-heading: var(--font-body);
+
+  --colour-bg: #f6f4ef;
+  --colour-surface: #ffffff;
+  --colour-text: #1f2a24;
+  --colour-muted: #5d6b63;
+  --colour-border: #dcd8ce;
+  --colour-accent: #2f5d46;
+  --colour-accent-text: #ffffff;
+  --colour-warn-bg: #fdf1dc;
+  --colour-warn-text: #7a4b00;
+  --colour-weed-bg: #fbe4e1;
+  --colour-weed-text: #8a2216;
+  --colour-match-bg: #e3f0e8;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --radius: 12px;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.6rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --colour-bg: #141a17;
+    --colour-surface: #1d2521;
+    --colour-text: #e8ece9;
+    --colour-muted: #a3b0a8;
+    --colour-border: #2f3a34;
+    --colour-accent: #7fbf9c;
+    --colour-accent-text: #0f1512;
+    --colour-warn-bg: #3a2c12;
+    --colour-warn-text: #f3cf8e;
+    --colour-weed-bg: #3d1d19;
+    --colour-weed-text: #f4b3a9;
+    --colour-match-bg: #1f3529;
+  }
+}
