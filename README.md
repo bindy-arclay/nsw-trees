@@ -9,6 +9,8 @@ It's a Progressive Web App: plain HTML, CSS and JavaScript with no build step, h
 - `data/trees.json`: the tree list and notes. Trees with `"ready": true` show in the app; the rest are used to match photo ID results.
 - `theme.css`: every colour, font and spacing value. Change the look here.
 - `styles.css`: layout.
+- `fonts/`: Cormorant Garamond and Source Serif 4 (SIL Open Font License), stored here so the app works offline.
+- `art/`: ink-and-watercolour drawings. Each tree page shows one chosen by the tree's family (gum, banksia, wattle or leaf) until it has its own hero drawing.
 - `app.js`: pages, reference photos (from iNaturalist until the tree has its own `photos`), and photo ID.
 - `sw.js`: offline support. Bump `VERSION` whenever app files change.
 
@@ -23,3 +25,13 @@ Add entries to that tree's `photos` list in `data/trees.json`:
 ```json
 { "thumb": "photos/angophora-costata/bark-small.jpg", "src": "photos/angophora-costata/bark.jpg", "credit": "Andy, 2026" }
 ```
+
+## Adding a tree's hero drawing
+
+Put the drawing in `art/trees/` (PNG or JPG, white or transparent background, portrait, at least 1500 px on the long side), then add it to that tree in `data/trees.json`:
+
+```json
+"hero": "art/trees/scribbly-gum.png"
+```
+
+The drawing shows at the top of the tree's page and replaces the shared drawing for that tree only.

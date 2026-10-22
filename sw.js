@@ -1,10 +1,13 @@
 // Bump VERSION whenever app files change, so phones pick up the new version.
-const VERSION = 'v2';
+const VERSION = 'v3';
 const SHELL = `shell-${VERSION}`;
 const IMAGES = 'images-v1';
 const FILES = [
   './', 'index.html', 'theme.css', 'styles.css', 'app.js', 'data/trees.json',
   'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png',
+  'fonts/cormorant-garamond.woff2', 'fonts/cormorant-garamond-italic.woff',
+  'fonts/source-serif-4.woff2', 'fonts/source-serif-4-italic.woff2',
+  'art/gum.svg', 'art/banksia.svg', 'art/wattle.svg', 'art/leaf.svg', 'art/wash.svg',
 ];
 const PHOTO_HOSTS = ['inaturalist-open-data.s3.amazonaws.com', 'static.inaturalist.org'];
 

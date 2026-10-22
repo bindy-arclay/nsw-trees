@@ -30,6 +30,14 @@ function names(tree) {
   return m ? { main: m[1], alt: m[2] } : { main: tree.common, alt: null };
 }
 
+// The ink-and-watercolour drawing that decorates a tree's page until it has its own hero drawing.
+function motif(tree) {
+  if (/Banksia|Proteaceae/.test(tree.family)) return 'art/banksia.svg';
+  if (/Wattle/.test(tree.family)) return 'art/wattle.svg';
+  if (/Eucalypt|Angophora/.test(tree.family)) return 'art/gum.svg';
+  return 'art/leaf.svg';
+}
+
 function findTree(scientificName) {
   const key = speciesKey(scientificName);
   const genus = key.split(' ')[0];
@@ -77,10 +85,14 @@ function treeList() {
   const ready = trees.filter((t) => t.ready);
   const waiting = trees.length - ready.length;
   view.innerHTML = `
-    <h1>Trees</h1>
+    <div class="intro">
+      <img class="motif" src="art/gum.svg" alt="">
+      <h1>Your trees</h1>
+      <p class="sci-name">of the NSW bush</p>
+    </div>
     <input class="search" type="search" placeholder="Search by name, bark or leaf" aria-label="Search trees">
     <ul class="card-list" id="list"></ul>
-    <p class="muted small">${waiting} more trees from your list of ${trees.length} are on the way.</p>`;
+    <p class="on-the-way">${waiting} more trees from your list of ${trees.length} are on the way.</p>`;
   const list = view.querySelector('#list');
   const render = (term) => {
     const t = term.trim().toLowerCase();
@@ -92,9 +104,9 @@ function treeList() {
         <img class="thumb" data-thumb="${tree.slug}" alt="">
         <span>
           <span class="name">${esc(n.main)}</span><br>
-          <span class="sub"><span class="sci">${esc(tree.scientific)}</span></span><br>
-          ${tree.origin.startsWith('Introduced') ? '<span class="badge">Introduced</span>' : ''}
-          ${tree.idAvailable ? '' : '<span class="badge warn">No photo ID</span>'}
+          <span class="sub"><span class="sci">${esc(tree.scientific)}</span></span>
+          ${tree.origin.startsWith('Introduced') ? '<span class="tag">Introduced</span>' : ''}
+          ${tree.idAvailable ? '' : '<span class="tag warn">No photo ID</span>'}
         </span></a></li>`;
     }).join('') || '<li class="muted">No trees match that search.</li>';
     list.querySelectorAll('img[data-thumb]').forEach(async (img) => {
@@ -107,7 +119,7 @@ function treeList() {
 }
 
 function fact(label, value) {
-  return value ? `<dt>${label}</dt><dd>${esc(value)}</dd>` : '';
+  return value ? `<div><dt>${label}</dt><dd>${esc(value)}</dd></div>` : '';
 }
 
 async function treePage(slug) {
@@ -115,16 +127,22 @@ async function treePage(slug) {
   if (!tree) { view.innerHTML = '<p>That tree isn\'t in the app yet.</p><a href="#/">Back to trees</a>'; return; }
   const n = names(tree);
   const isWeed = tree.weed && !/^none/i.test(tree.weed);
+  const title = `
+    <header class="title">
+      <h1>${esc(n.main)}</h1>
+      <p class="sci-name">${esc(tree.scientific)}</p>
+      ${n.alt ? `<p class="muted small">Also called ${esc(n.alt)}</p>` : ''}
+      <p class="label">${esc(tree.family)} · ${esc(tree.origin)}</p>
+      ${isWeed ? '<span class="badge weed">Weed</span>' : ''}
+    </header>`;
+  const plate = `
+    <div class="plate${tree.hero ? ' has-hero' : ''}">
+      <div id="photos"><div class="photo-empty">Loading photos…</div></div>
+      <img class="motif" src="${motif(tree)}" alt="">
+    </div>`;
   view.innerHTML = `
     <a class="back" href="#/">‹ All trees</a>
-    <h1>${esc(n.main)}</h1>
-    <p class="muted"><span class="sci">${esc(tree.scientific)}</span>${n.alt ? ` · also called ${esc(n.alt)}` : ''}</p>
-    <div>
-      <span class="badge">${esc(tree.family)}</span>
-      <span class="badge">${esc(tree.origin)}</span>
-      ${isWeed ? '<span class="badge weed">Weed</span>' : ''}
-    </div>
-    <div id="photos"><div class="photo-empty">Loading photos…</div></div>
+    ${tree.hero ? `<figure class="hero"><img src="${esc(tree.hero)}" alt="Botanical drawing of ${esc(n.main)}"></figure>${title}${plate}` : `${plate}${title}`}
     ${tree.idAvailable ? '' : `<div class="note"><strong>Not available for photo ID.</strong>
       Pl@ntNet doesn't recognise this tree yet, so use the ID tips below instead.</div>`}
     ${tree.plantnetCommon ? `<p class="muted small">Pl@ntNet calls this tree “${esc(tree.plantnetCommon)}”.</p>` : ''}
@@ -136,17 +154,17 @@ async function treePage(slug) {
       ${fact('Leaves', tree.leaves)}
       ${fact('Flowers', tree.flowers)}
       ${fact('Height', tree.height)}
-      ${fact('Easily confused with', tree.confused)}
     </dl>
+    ${tree.confused ? `<div class="note confused"><div class="label">Don't mix it up with</div>${esc(tree.confused)}</div>` : ''}
     <h2>Where you'll see it</h2>
     <dl class="facts">
       ${fact('On a walk', tree.habitat)}
       ${fact('Where in NSW', tree.whereNSW)}
       ${fact('Range in Australia', tree.range)}
     </dl>
+    ${tree.fact ? `<div class="fact"><div class="label">Little-known fact</div><p>${esc(tree.fact)}</p></div>` : ''}
     <h2>Good to know</h2>
     <dl class="facts">
-      ${fact('Little-known fact', tree.fact)}
       ${fact('Wildlife', tree.wildlife)}
       ${fact('Uses', tree.uses)}
     </dl>`;
@@ -161,7 +179,7 @@ async function treePage(slug) {
   box.innerHTML = `<div class="gallery">${data.photos.map((p) => `
       <figure><img src="${esc(p.src)}" alt="${esc(n.main)}" loading="lazy">
       <figcaption>${esc(p.credit)}</figcaption></figure>`).join('')}</div>
-    ${data.source ? `<p class="muted small">Photos from <a href="${esc(data.source)}" target="_blank" rel="noopener">iNaturalist</a>. Swipe for more.</p>` : ''}`;
+    ${data.source ? `<p class="source muted small">Photos from <a href="${esc(data.source)}" target="_blank" rel="noopener">iNaturalist</a>. Swipe for more.</p>` : ''}`;
 }
 
 function identifyPage() {
