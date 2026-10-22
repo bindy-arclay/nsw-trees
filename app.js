@@ -265,8 +265,10 @@ async function identify() {
     return;
   }
   if (res.status === 401 || res.status === 403) {
+    const reason = await res.json().then((b) => b.message || b.error).catch(() => '');
     out.innerHTML = `<div class="note">Pl@ntNet didn't accept your key. Check it in <a href="#/settings">Settings</a>,
-      and check this app's web address is on the key's list of allowed websites at my.plantnet.org.</div>`;
+      and check "expose my API key" is ticked and this app's address is under "Authorized domains" at my.plantnet.org.
+      <br><br><span class="small">Pl@ntNet said: error ${res.status}${reason ? `, “${esc(reason)}”` : ''}</span></div>`;
     return;
   }
   if (res.status === 429) {
@@ -325,7 +327,9 @@ function settingsPage() {
         placeholder="${key ? 'Key saved' : 'Paste your key here'}">
       <button class="button" id="save">Save key</button>
       ${key ? '<button class="button secondary" id="clear">Remove saved key</button>' : ''}
-      <p class="status" id="msg" aria-live="polite">${key ? 'A key is saved on this phone.' : 'No key saved yet.'}</p>
+      <p class="status" id="msg" aria-live="polite">${key
+        ? `A key is saved on this phone. It's ${key.length} characters long and ends in <strong>${esc(key.slice(-4))}</strong>.`
+        : 'No key saved yet.'}</p>
       ${remaining ? `<p class="muted small">Pl@ntNet identifications left today: ${esc(remaining)}</p>` : ''}
     </div>
     <h2>Photos</h2>
@@ -336,11 +340,13 @@ function settingsPage() {
       Photo ID by <a href="https://plantnet.org" target="_blank" rel="noopener">Pl@ntNet</a>.</p>`;
   const msg = view.querySelector('#msg');
   view.querySelector('#save').addEventListener('click', () => {
-    const value = view.querySelector('#key').value.trim();
+    // Drop spaces, line breaks and quote marks that can come along when copying.
+    const value = view.querySelector('#key').value.replace(/[\s"'“”‘’]/g, '');
     if (!value) { msg.textContent = 'Paste your key into the box first.'; return; }
     store.set(KEY_STORE, value);
     settingsPage();
-    view.querySelector('#msg').textContent = 'Key saved. You\'re ready to identify trees.';
+    const saved = view.querySelector('#msg');
+    saved.innerHTML = `Key saved. You're ready to identify trees. ${saved.innerHTML.replace('A key is saved on this phone. ', '')}`;
   });
   view.querySelector('#clear')?.addEventListener('click', () => {
     store.remove(KEY_STORE);
