@@ -28,10 +28,12 @@ Add entries to that tree's `photos` list in `data/trees.json`:
 
 ## Adding a tree's hero drawing
 
-Put the drawing in `art/trees/` (PNG or JPG, white or transparent background, portrait, at least 1500 px on the long side), then add it to that tree in `data/trees.json`:
+Put the drawing in `art/trees/`, named after the tree's slug, then add it to that tree in `data/trees.json`:
 
 ```json
-"hero": "art/trees/scribbly-gum.png"
+"hero": "art/trees/scribbly-gum.jpg"
 ```
+
+Save it as a portrait JPG, 1024 × 1536 px, on a pure white background. At that size each drawing is about 250 KB, which keeps the app quick on the track.
 
 The drawing shows at the top of the tree's page and replaces the shared drawing for that tree only.
