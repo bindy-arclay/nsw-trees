@@ -37,3 +37,5 @@ Put the drawing in `art/trees/`, named after the tree's slug, then add it to tha
 Save it as a portrait JPG, 1024 × 1536 px, on a pure white background. At that size each drawing is about 250 KB, which keeps the app quick on the track.
 
 The drawing shows at the top of the tree's page and replaces the shared drawing for that tree only.
+
+For the tree list, add a 192 × 192 px square crop of the drawing's bark study as `art/trees/<slug>-thumb.jpg` and point to it with `"thumb"`. Trees without one show their first reference photo instead.

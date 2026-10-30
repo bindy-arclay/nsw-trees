@@ -101,7 +101,7 @@ function treeList() {
     list.innerHTML = shown.map((tree) => {
       const n = names(tree);
       return `<li><a class="card" href="#/tree/${tree.slug}">
-        <img class="thumb" data-thumb="${tree.slug}" alt="">
+        <img class="thumb" ${tree.thumb ? `src="${esc(tree.thumb)}"` : `data-thumb="${tree.slug}"`} alt="">
         <span>
           <span class="name">${esc(n.main)}</span><br>
           <span class="sub"><span class="sci">${esc(tree.scientific)}</span></span>
