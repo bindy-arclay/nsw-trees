@@ -1,5 +1,5 @@
 // Bump VERSION whenever app files change, so phones pick up the new version.
-const VERSION = 'v6';
+const VERSION = 'v7';
 const SHELL = `shell-${VERSION}`;
 const IMAGES = 'images-v1';
 const FILES = [
@@ -12,7 +12,15 @@ const FILES = [
 const PHOTO_HOSTS = ['inaturalist-open-data.s3.amazonaws.com', 'static.inaturalist.org'];
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(SHELL).then((c) => c.addAll(FILES)).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(SHELL).then(async (c) => {
+    await c.addAll(FILES);
+    // Save every tree's drawing too, so tree pages open with the drawing already there.
+    try {
+      const trees = await (await fetch('data/trees.json')).json();
+      const art = trees.flatMap((t) => [t.hero, t.thumb]).filter((x) => x && x.startsWith('art/'));
+      await c.addAll([...new Set(art)]);
+    } catch { /* drawings will be saved as each page is opened instead */ }
+  }).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (e) => {
