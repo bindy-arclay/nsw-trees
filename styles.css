@@ -115,7 +115,9 @@ main { max-width: 720px; margin: 0 auto; padding: var(--space-4) var(--space-5) 
 /* Tree page */
 .back { display: inline-block; margin-bottom: var(--space-3); text-decoration: none; }
 .hero { margin: 0 0 var(--space-4); text-align: center; }
-.hero img { margin: 0 auto; max-height: 60vh; width: auto; }
+/* The drawing's space is held open before it loads, so the photos below never jump.
+   Drawings are 2:3 portraits; 40vh wide makes them 60vh tall. */
+.hero img { margin: 0 auto; width: min(100%, 40vh); height: auto; aspect-ratio: 2 / 3; object-fit: contain; }
 
 .plate { position: relative; margin: var(--space-4) 0 var(--space-5); padding: var(--space-4) 0 0; }
 .plate::before {

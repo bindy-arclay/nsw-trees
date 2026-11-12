@@ -142,7 +142,7 @@ async function treePage(slug) {
     </div>`;
   view.innerHTML = `
     <a class="back" href="#/">‹ All trees</a>
-    ${tree.hero ? `<figure class="hero"><img src="${esc(tree.hero)}" alt="Botanical drawing of ${esc(n.main)}"></figure>${title}${plate}` : `${plate}${title}`}
+    ${tree.hero ? `<figure class="hero"><img src="${esc(tree.hero)}" width="900" height="1350" fetchpriority="high" decoding="async" alt="Botanical drawing of ${esc(n.main)}"></figure>${title}${plate}` : `${plate}${title}`}
     ${tree.idAvailable ? '' : `<div class="note"><strong>Not available for photo ID.</strong>
       Pl@ntNet doesn't recognise this tree yet, so use the ID tips below instead.</div>`}
     ${tree.plantnetCommon ? `<p class="muted small">Pl@ntNet calls this tree “${esc(tree.plantnetCommon)}”.</p>` : ''}
